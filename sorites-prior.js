@@ -172,6 +172,7 @@ var experiment = {
         $("#targetError").show();
       } else {
         $("#targetError").hide();
+        experiment.data[qNumber] = trialData;
         if (qNumber + 1 < nQs) {
           experiment.trial(qNumber+1);
         } else {
