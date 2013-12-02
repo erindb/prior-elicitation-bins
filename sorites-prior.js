@@ -40,13 +40,14 @@ function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
 $(document).ready(function() {
   showSlide("consent");
   $("#mustaccept").hide();
+  $("#targetError").hide();
   $("#trial-num").html("0");
   $(".tot-num").html(nQs);
   $(".nBins").html(nBins);
 });
 
 var experiment = {
-  data: {},
+  data: [],
   
   instructions: function() {
     if (turk.previewMode) {
@@ -101,6 +102,9 @@ var experiment = {
     var firstColWidth = 150;
     var otherColWidth = 100;
 
+    var lowers = [];
+    var uppers = [];
+
     var sliderCells = ""
     var priceCells = ""
     for (var i=0; i<nBins; i++) {
@@ -108,21 +112,37 @@ var experiment = {
       if (i<(nBins-1)) {
         var lowPrice = i*stepLength;
         var highPrice = (i+1)*stepLength;
+        lowers.push(lowPrice);
+        uppers.push(highPrice);
         priceCells += ('<td align="center" width="' + otherColWidth + '">$' + lowPrice + '-$' + highPrice + '</td>');
       } else {
+        lowers.push(maxes[item]);
+        uppers.push("infty");
         priceCells += ('<td align="center" width="' + otherColWidth + '">more than $' + maxes[item] + '</td>');
       }
     }
     $("#sliders").html('<td height="72" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
     $("#prices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
 
+    var trialData = {buyer:buyer,
+                     item:item,
+                     stepLength:stepLength,
+                     max:maxes[item],
+                     lowers:lowers,
+                     uppers:uppers,
+                     responses:[]};
+    var nResponses = 0;
+
     function changeCreator(i) {
-      return function() {
-        //$('#hiddenSliderValue0').attr('value', ui.value);
+      return function(value) {
         $('#' + sliderLabel[i]).css({"background":"#99D6EB"});
         $('#' + sliderLabel[i] + ' .ui-slider-handle').css({
           "background":"#667D94",
           "border-color": "#001F29" });
+        if (trialData.responses[i] == null) {
+          nResponses++;
+        }
+        trialData.responses[i] = $("#"+caseLabel).slider("value");
       } 
     }
 
@@ -148,10 +168,15 @@ var experiment = {
     }
 
     $("#continue").click(function() {
-      if (qNumber + 1 < nQs) {
-        experiment.trial(qNumber+1);
+      if (nResponses < nBins) {
+        $("#targetError").show();
       } else {
-        experiment.questionaire();
+        $("#targetError").hide();
+        if (qNumber + 1 < nQs) {
+          experiment.trial(qNumber+1);
+        } else {
+          experiment.questionaire();
+        }
       }
     })
   }
