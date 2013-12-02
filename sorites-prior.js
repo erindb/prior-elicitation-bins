@@ -142,7 +142,8 @@ var experiment = {
         if (trialData.responses[i] == null) {
           nResponses++;
         }
-        trialData.responses[i] = $("#"+caseLabel).slider("value");
+        trialData.responses[i] = $("#"+sliderLabel[i]).slider("value");
+        console.log(trialData.responses)
       } 
     }
 
