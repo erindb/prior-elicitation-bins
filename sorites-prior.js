@@ -10,9 +10,9 @@ var cond = buyerGenders[0];
 if (cond == "boys") {
   var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan"]);
 } else if (cond == "girls") {
-  var buyers = shuffle(["Ann", "Beth", "Caitlyn", "Danielle", "Eve"]);
+  var buyers = shuffle(["Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 } else {
-  var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Eve"]);
+  var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 }
 
 var plural = {"watch":"watches",
