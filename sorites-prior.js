@@ -43,7 +43,7 @@ var roundToNearest = {"coffee maker":10, "headphones":10, "laptop":10, "sweater"
 var nProbQs = items.length;
 var nMaxQs = items.length;
 var nQs = nProbQs + nMaxQs;
-var nBins = 10;
+var nBins = 20;
 var nClicks = nProbQs*nBins + nMaxQs;
 
 var startTime;
@@ -130,7 +130,7 @@ var experiment = {
 
     var sliderCells = ""
     var priceCells = ""
-    for (var i=0; i<nBins; i++) {
+    for (var i=0; i<10; i++) {
       sliderCells += ('<td rowspan="5" width="' + otherColWidth + '" align="center"><div class="slider" id="' + sliderLabel[i] + '"></div></td>');
       if (i<(nBins-1)) {
         var lowPrice = i*stepLength;
@@ -146,6 +146,26 @@ var experiment = {
     }
     $("#sliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
     $("#prices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
+
+
+    var sliderCells = ""
+    var priceCells = ""
+    for (var i=10; i<nBins; i++) {
+      sliderCells += ('<td rowspan="5" width="' + otherColWidth + '" align="center"><div class="slider" id="' + sliderLabel[i] + '"></div></td>');
+      if (i<(nBins-1)) {
+        var lowPrice = i*stepLength;
+        var highPrice = (i+1)*stepLength;
+        lowers.push(lowPrice);
+        uppers.push(highPrice);
+        priceCells += ('<td align="center" width="' + otherColWidth + '">$' + lowPrice + '-$' + highPrice + '</td>');
+      } else {
+        lowers.push(maxes[item]);
+        uppers.push("infty");
+        priceCells += ('<td align="center" width="' + otherColWidth + '">more than $' + maxes[item] + '</td>');
+      }
+    }
+    $("#moreSliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
+    $("#morePrices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
 
     var trialData = {buyer:buyer,
                      item:item,
