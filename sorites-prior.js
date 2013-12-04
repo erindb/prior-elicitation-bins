@@ -121,7 +121,7 @@ var experiment = {
         priceCells += ('<td align="center" width="' + otherColWidth + '">more than $' + maxes[item] + '</td>');
       }
     }
-    $("#sliders").html('<td height="72" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
+    $("#sliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
     $("#prices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
 
     var trialData = {buyer:buyer,
@@ -157,7 +157,7 @@ var experiment = {
     }
 
     for (var i=0; i<nBins; i++) {
-      $("#" + sliderLabel[i]).attr({"width":"12px", "height":"300px", "position":"relative", "margin":"5px"});
+      $("#" + sliderLabel[i]).attr({"width":"12px", "height":"360px", "position":"relative", "margin":"5px"});
       $("#" + sliderLabel[i] + " .ui-slider-handle").attr({"background": "#FAFAFA"});
       $('#' + sliderLabel[i]).slider({
         animate: true,
