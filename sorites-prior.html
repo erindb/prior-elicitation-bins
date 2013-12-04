@@ -11,7 +11,6 @@
   <div class="bar-wrapper">
     <div class="bar"></div>
   </div>
-  <p><span id="trial-num">{{}}</span><span>/</span><span class="tot-num">{{}}</span></p>
 </div>
 
 <div class="slide" id="consent">
@@ -20,7 +19,7 @@
   <br>
   <p class="block-text">Thank you very much for participating in our experiment. In this experiment, we are interested in how
   people estimate the prices of everyday items.</p>
-  <p class="block-text">This experiment should take about ______ minutes to complete.</b></p> 
+  <p class="block-text">This experiment should take about 3 minutes to complete.</b></p> 
   <button type="button" onClick="this.blur(); experiment.instructions()">Start</button>
   <p class="block-text">(Note: you won't be able to preview this HIT before accepting it because it's so short.)</p>
   <p class="block-text" id="mustaccept"> You must accept the HIT in order to continue.</p>
@@ -29,9 +28,10 @@
 
 <div class="slide" id="instructions">
   <h2>Instructions</h2>
-  <p class="center-block-text"> You will see <span class="tot-num">{{}}</span> scenarios displayed on the screen. </p>
+  <p class="center-block-text"> You will see <span class="prob-num">{{}}</span> scenarios displayed on the screen. </p>
   <p class="center-block-text"> In each scenario, someone has just bought an item. Please give your best estimate of the price of the item. You will do this by rating how likely you think it is that the actual price is within each of <span class="nBins">{{}}</span> different ranges.</p>
   <p class="center-block-text"> In each scenario, <b>the price ranges will change</b>. Make sure to look carefully at the prices each time.</p>
+  <p class="center-block-text"> After these scenarios you will be asked a few brief questions. </p>
   <p class="center-block-text">Please click "Begin" when you're ready to start.</p>
   <button type="button" id="begin" value="Begin">
   Begin</button>
@@ -70,6 +70,18 @@
   </tbody></table>
   <button type="button" id="continue">Continue</button>
   <p id="targetError">Please make sure to adjust all the sliders before continuing (or tap the slider if you think it's already in the right position).</p> 
+</div>
+
+<div class="slide" id="maxTrial">
+  <br/>
+  <br/>
+  <p class="center-block-text">Imagine that 1000 <b><span class="pluralItem">{{}}</span></b> were bought today. Out of those 1000 <b><span class="pluralItem">{{}}</span></b>, how much do you think the <i>most expensive</i> <b><span class="item">{{}}</span></b> cost?</p>
+  <div><input type="text" id="max"></input></div>
+  <br/>
+  <button type="button" id="maxContinue">Continue</button>
+  <p id="maxError">Please enter a valid price -- a natural number with no
+  decimal point, or a number with a decimal point and two digits after the
+  decimal.</p>
 </div>
 
 <div class="slide" id="finished">

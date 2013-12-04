@@ -5,7 +5,21 @@ function shuffle(v) { newarray = v.slice(0);for(var j, x, i = newarray.length; i
 function myRound(rawPrice, roundToNearest) { return Math.round(rawPrice/roundToNearest)*roundToNearest; }
 
 var items = shuffle(["watch", "laptop", "coffee maker", "headphones", "sweater"]);
-var buyers = shuffle(["Alex", "Bob", "Calvin", "Dan", "Evan"]);
+var buyerGenders = shuffle(["boys", "girls", "both"]);
+var cond = buyerGenders[0];
+if (cond == "boys") {
+  var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan"]);
+} else if (cond == "girls") {
+  var buyers = shuffle(["Ann", "Beth", "Caitlyn", "Danielle", "Eve"]);
+} else {
+  var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Eve"]);
+}
+
+var plural = {"watch":"watches",
+              "laptop":"laptops",
+              "coffee maker":"coffee makers",
+              "headphones":"headphones",
+              "sweater":"sweaters"}
 
 /*Using all of our prior types so far, where is a point where before this there's significant probability mass and after it there's not?
 prior types:
@@ -26,8 +40,13 @@ var maxes = {
 //maybe it would make sense to round different items differently:
 var roundToNearest = {"coffee maker":10, "headphones":10, "laptop":10, "sweater":10, "watch":10};
 
-var nQs = items.length;
+var nProbQs = items.length;
+var nMaxQs = items.length;
+var nQs = nProbQs + nMaxQs;
 var nBins = 10;
+var nClicks = nProbQs*nBins + nMaxQs;
+
+var startTime;
 
 // labels for making sliders and changing css, etc. 
 var sliderLabel = []
@@ -39,15 +58,17 @@ function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
 
 $(document).ready(function() {
   showSlide("consent");
+  startTime = Date.now();
   $("#mustaccept").hide();
   $("#targetError").hide();
   $("#trial-num").html("0");
   $(".tot-num").html(nQs);
+  $(".prob-num").html(nProbQs);
   $(".nBins").html(nBins);
 });
 
 var experiment = {
-  data: [],
+  data: {cond:cond},
   
   instructions: function() {
     if (turk.previewMode) {
@@ -78,6 +99,8 @@ var experiment = {
         experiment.data["language"] = lang;
         experiment.data["comments"] = comments;
         experiment.data["age"] = age;
+        var endTime = Date.now();
+        experiment.data["duration"] = endTime - startTime;
         showSlide("finished");
         setTimeout(function() { turk.submit(experiment.data) }, 1000);
       }
@@ -85,7 +108,7 @@ var experiment = {
   },
   
   trial: function(qNumber) {
-    $('.bar').css('width', ( (qNumber / nQs)*100 + "%"));
+    $('.bar').css('width', ( ((qNumber*nBins) / nClicks)*100 + "%"));
     showSlide("trial");
 
     var item = items[qNumber];
@@ -141,8 +164,9 @@ var experiment = {
           "border-color": "#001F29" });
         if (trialData.responses[i] == null) {
           nResponses++;
+          $('.bar').css('width', ( ((qNumber*nBins + nResponses) / nClicks)*100 + "%"));
         }
-        trialData.responses[i] = $("#"+sliderLabel[i]).slider("value");
+        trialData.responses[i.toString()] = $("#"+sliderLabel[i]).slider("value");
         console.log(trialData.responses)
       } 
     }
@@ -172,14 +196,44 @@ var experiment = {
       if (nResponses < nBins) {
         $("#targetError").show();
       } else {
+        $("#continue").unbind("click");
         $("#targetError").hide();
-        experiment.data[qNumber] = trialData;
-        if (qNumber + 1 < nQs) {
+        experiment.data[qNumber.toString()] = trialData;
+        if (qNumber + 1 < nProbQs) {
           experiment.trial(qNumber+1);
+        } else {
+          experiment.maxTrial(qNumber+1);
+        }
+      }
+    })
+  },
+
+  maxTrial: function(qNumber) {
+    $('.bar').css('width', ( ((nProbQs*nBins + (qNumber-nProbQs)) / nClicks)*100 + "%"));
+    showSlide("maxTrial");
+    $("#max").val("");
+    $("#maxError").hide();
+
+    var item = items[qNumber - nProbQs];
+    $(".item").html(item);
+    console.log(plural[item]);
+    $(".pluralItem").html(plural[item]);
+
+    $("#maxContinue").click(function() {
+		  var response = $("#max").val();
+		  var isPrice = /^[0-9]*(\.[0-9])?[0-9]$/.test(response);
+		  if (isPrice) {
+        $("#maxContinue").unbind("click");
+        $("#targetError").hide();
+        experiment.data[qNumber.toString()] = {response:response, item:item};
+        if (qNumber + 1 < nQs) {
+          experiment.maxTrial(qNumber+1);
         } else {
           experiment.questionaire();
         }
-      }
+		  } else {
+		    $("#maxError").show();
+		  }
     })
   }
 };
