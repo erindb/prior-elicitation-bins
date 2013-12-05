@@ -28,10 +28,9 @@
 
 <div class="slide" id="instructions">
   <h2>Instructions</h2>
-  <p class="center-block-text"> You will see <span class="prob-num">{{}}</span> scenarios displayed on the screen. </p>
+  <p class="center-block-text"> You will see 5 scenarios displayed on the screen. </p>
   <p class="center-block-text"> In each scenario, someone has just bought an item. Please give your best estimate of the price of the item. You will do this by rating how likely you think it is that the actual price is within each of <span class="nBins">{{}}</span> different ranges.</p>
-  <p class="center-block-text"> In each scenario, <b>the price ranges will change</b>. Make sure to look carefully at the prices each time.</p>
-  <p class="center-block-text"> After these scenarios you will be asked a few brief questions. </p>
+  <p class="center-block-text"> In each scenario, <b>the items will change</b>. Make sure to look carefully at the items each time.</p>
   <p class="center-block-text">Please click "Begin" when you're ready to start.</p>
   <button type="button" id="begin" value="Begin">
   Begin</button>
@@ -57,48 +56,9 @@
 </div>
 
 <div class="slide" id="trial">
-
-  <p id="statement"><span class="buyer">{{}}</span> bought <span class="article">{{}}</span> new <i><b><span class="item">{{}}</span></b></i>. </p>
-  <p id="question">Please rate how likely it is that the cost of the <span class="item">{{}}</span> is within each of the following ranges.</p>
-  <hr/>
-  <table><tbody>
-    <tr id="sliders"></tr>
-    <tr><td height="72">Very Likely</td></tr>
-    <tr><td height="72">Neutral</td></tr>
-    <tr><td height="72">Not Very Likely</td></tr>
-    <tr><td height="72">Extremely Unlikely</td></tr>
-    <tr id="prices"></tr>
-  </tbody></table>
-  <hr/>
-  <table><tbody>
-    <tr id="moreSliders"></tr>
-    <tr><td height="72">Very Likely</td></tr>
-    <tr><td height="72">Neutral</td></tr>
-    <tr><td height="72">Not Very Likely</td></tr>
-    <tr><td height="72">Extremely Unlikely</td></tr>
-    <tr id="morePrices"></tr>
-  </tbody></table>
-  <hr/>
-  <table><tbody>
-    <tr id="evenMoreSliders"></tr>
-    <tr><td height="72">Very Likely</td></tr>
-    <tr><td height="72">Neutral</td></tr>
-    <tr><td height="72">Not Very Likely</td></tr>
-    <tr><td height="72">Extremely Unlikely</td></tr>
-    <tr id="evenMorePrices"></tr>
-  </tbody></table>
-  <hr/>
-  <table><tbody>
-    <tr id="wayMoreSliders"></tr>
-    <tr><td height="72">Very Likely</td></tr>
-    <tr><td height="72">Neutral</td></tr>
-    <tr><td height="72">Not Very Likely</td></tr>
-    <tr><td height="72">Extremely Unlikely</td></tr>
-    <tr id="wayMorePrices"></tr>
-  </tbody></table>
-  <hr/>
-  <button type="button" id="continue">Continue</button>
+  <div id="all-that-jazz"></div>
   <p id="targetError">Please make sure to adjust all the sliders before continuing (or tap the slider if you think it's already in the right position).</p> 
+  <button type="button" id="continue">Continue</button>
 </div>
 
 <div class="slide" id="maxTrial">

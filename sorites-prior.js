@@ -2,7 +2,6 @@ function caps(a) {return a.substring(0,1).toUpperCase() + a.substring(1,a.length
 function uniform(a, b) { return ( (Math.random()*(b-a))+a ); }
 function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
 function shuffle(v) { newarray = v.slice(0);for(var j, x, i = newarray.length; i; j = parseInt(Math.random() * i), x = newarray[--i], newarray[i] = newarray[j], newarray[j] = x);return newarray;} // non-destructive.
-function myRound(rawPrice, roundToNearest) { return Math.round(rawPrice/roundToNearest)*roundToNearest; }
 
 var items = shuffle(["watch", "laptop", "coffee maker", "headphones", "sweater"]);
 var buyerGenders = shuffle(["boys", "girls", "both"]);
@@ -15,12 +14,22 @@ if (cond == "boys") {
   var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 }
 
-var sdev = {
-  "watch": 15.28736,
-  "laptop": 254.2707,
-  "coffee maker": 22.31799,
-  "headphones": 31.54902,
-  "sweater": 15.28736
+stepLength = {
+  "watch":50,
+  "laptop":50,
+  "coffee maker":4,
+  "headphones":6,
+  "sweater":3
+}
+maximum = {
+  "watch":3000,
+  "laptop":2500,
+  "coffee maker":270,
+  "headphones":330,
+  "sweater":240
+}
+function nBins(item) {
+  return Math.ceil(maximum[item] / stepLength[item]);
 }
 
 var plural = {"watch":"watches",
@@ -29,37 +38,19 @@ var plural = {"watch":"watches",
               "headphones":"headphones",
               "sweater":"sweaters"}
 
-/*Using all of our prior types so far, where is a point where before this there's significant probability mass and after it there's not?
-prior types:
-ebay: scraped ebay
-amazon: scraped amazon
-original: asking people for prices of a given item - unconstrained
-interval: asking people for prices of a given item - constrained by "has to be above/below $X"
-justine's: asking people for probability of seeing a watch at a given price - very course-grained and only watches and laptops
-*/
-var maxes = {
-             "coffee maker":400, //or 800? the interval expt went out that far...
-             "headphones":300, //or 800? the interval expt went out that far...
-             "laptop":5000, //justine's prior elicitation for hyperbole went out to 10,000
-             "sweater":400, //no measure goes past this, most go to zero at around this point.
-             "watch":500 //justine's went out to 10,000. interval went out to 2000. everything else went down to zero at around 500.
-            };
-
-//maybe it would make sense to round different items differently:
-var roundToNearest = {"coffee maker":1, "headphones":1, "laptop":10, "sweater":1, "watch":1};
-
-var nProbQs = items.length;
-var nMaxQs = items.length;
-var nQs = nProbQs + nMaxQs;
-var nBins = 40;
-var nClicks = (nProbQs*nBins) + nMaxQs;
+var nQs = items.length;
+var nClicks = 0;
+for (var i=0; i<nQs; i++) {
+  nClicks += nBins(items[i]);
+}
+console.log(nClicks);
+var nComplete = 0;
 
 var startTime;
 
 // labels for making sliders and changing css, etc. 
-var sliderLabel = []
-for (var i=0; i<nBins; i++) {
-  sliderLabel[i] = "slider" + i.toString();
+function sliderLabel(i) {
+  return("slider" + i.toString());
 }
 
 function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
@@ -71,7 +62,6 @@ $(document).ready(function() {
   $("#targetError").hide();
   $("#trial-num").html("0");
   $(".tot-num").html(nQs);
-  $(".prob-num").html(nProbQs);
   $(".nBins").html(nBins);
 });
 
@@ -116,11 +106,28 @@ var experiment = {
   },
   
   trial: function(qNumber) {
-    $('.bar').css('width', ( ((qNumber*nBins) / nClicks)*100 + "%"));
+    $('.bar').css('width', ( (nComplete / nClicks)*100 + "%"));
     showSlide("trial");
 
     var item = items[qNumber];
     var buyer = buyers[qNumber];
+
+    var nRows = Math.ceil(nBins(item) / 10);
+    var allthatjazz = '';
+    for (var i=0; i<nRows; i++) {
+      allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> bought ' +
+                      ' <span class="article">{{}}</span> new <i><b><span class="item">{{}}</span></b></i>. ' +
+                      '</p><p id="question">Please rate how likely it is that the cost of the ' +
+                      '<span class="item">{{}}</span> is within each of the following ranges.</p>' +
+                      '<table><tbody><tr id="sliders' + i +
+                     '"></tr><tr><td height="72">Very Likely</td></tr>' +
+                     '<tr><td height="72">Neutral</td></tr>' +
+                     '<tr><td height="72">Not Very Likely</td></tr>' +
+                     '<tr><td height="72">Extremely Unlikely</td></tr>' +
+                     '<tr id="prices' + i + '"></tr></tbody></table><hr/>'
+    }
+    $("#all-that-jazz").html(allthatjazz);
+
     $(".item").html(item);
     $(".buyer").html(buyer);
     if (item == "headphones") {
@@ -128,7 +135,6 @@ var experiment = {
     } else {
       $(".article").html("a");
     }
-    var stepLength = myRound(sdev[item]*0.2, roundToNearest[item]);
 
     var firstColWidth = 150;
     var otherColWidth = 100;
@@ -138,43 +144,37 @@ var experiment = {
 
     var sliderCells = ""
     var priceCells = ""
-    for (var i=0; i<nBins; i++) {
-      if (i == 10 || i == 20 || i == 30) {
+    for (var i=0; i<nBins(item); i++) {
+      if (i % 10 == 0) {
         sliderCells = ""
         priceCells = ""
       }
-      sliderCells += ('<td rowspan="5" width="' + otherColWidth + '" align="center"><div class="slider" id="' + sliderLabel[i] + '"></div></td>');
-      if (i<(nBins-1)) {
-        var lowPrice = i*stepLength;
-        var highPrice = (i+1)*stepLength;
+      sliderCells += '<td rowspan="5" width="' + otherColWidth + '" align="center"><div class="slider" id="' + sliderLabel(i) + '"></div></td>';
+      if (i<(nBins(item)-1)) {
+        var lowPrice = i*stepLength[item];
+        var highPrice = (i+1)*stepLength[item];
         lowers.push(lowPrice);
         uppers.push(highPrice);
-        priceCells += ('<td align="center" width="' + otherColWidth + '">$' + lowPrice + '-$' + highPrice + '</td>');
+        priceCells += '<td align="center" width="' + otherColWidth + '">$' + lowPrice + '-$' + highPrice + '</td>';
       } else {
-        var lowPrice = i*stepLength;
+        var lowPrice = i*stepLength[item];
         lowers.push(lowPrice);
         uppers.push("infty");
-        priceCells += ('<td align="center" width="' + otherColWidth + '">more than $' + lowPrice + '</td>');
+        priceCells += '<td align="center" width="' + otherColWidth + '">more than $' + lowPrice + '</td>';
       }
-      if (i == 9) {
-        $("#sliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
-        $("#prices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
-      } else if (i == 19) {
-        $("#moreSliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
-        $("#morePrices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
-      } else if (i == 29) {
-        $("#evenMoreSliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
-        $("#evenMorePrices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
-      } else if (i == 39) {
-        $("#wayMoreSliders").html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
-        $("#wayMorePrices").html('<td width="' + firstColWidth + '"></td>' + priceCells);
+      if ((i % 10) == 9) {
+        $("#sliders" + Math.floor(i/10)).html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
+        $("#prices" + Math.floor(i/10)).html('<td width="' + firstColWidth + '"></td>' + priceCells);
       }
+    }
+    if ((i % 10) != 0) {
+      $("#sliders" + Math.floor(i/10)).html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
+      $("#prices" + Math.floor(i/10)).html('<td width="' + firstColWidth + '"></td>' + priceCells);
     }
 
     var trialData = {buyer:buyer,
                      item:item,
-                     stepLength:stepLength,
-                     max:maxes[item],
+                     max:maximum[item],
                      lowers:lowers,
                      uppers:uppers,
                      responses:[]};
@@ -182,32 +182,32 @@ var experiment = {
 
     function changeCreator(i) {
       return function(value) {
-        $('#' + sliderLabel[i]).css({"background":"#99D6EB"});
-        $('#' + sliderLabel[i] + ' .ui-slider-handle').css({
+        $('#' + sliderLabel(i)).css({"background":"#99D6EB"});
+        $('#' + sliderLabel(i) + ' .ui-slider-handle').css({
           "background":"#667D94",
           "border-color": "#001F29" });
         if (trialData.responses[i] == null) {
           nResponses++;
-          $('.bar').css('width', ( ((qNumber*nBins + nResponses) / nClicks)*100 + "%"));
+          nComplete++;
+          $('.bar').css('width', ( (nComplete / nClicks)*100 + "%"));
         }
-        trialData.responses[i.toString()] = $("#"+sliderLabel[i]).slider("value");
-        console.log(trialData.responses)
+        trialData.responses[i.toString()] = $("#"+sliderLabel(i)).slider("value");
       } 
     }
 
     function slideCreator(i) {
       return function() {
-        $('#' + sliderLabel[i] + ' .ui-slider-handle').css({
+        $('#' + sliderLabel(i) + ' .ui-slider-handle').css({
            "background":"#E0F5FF",
            "border-color": "#001F29"
         });
       }
     }
 
-    for (var i=0; i<nBins; i++) {
-      $("#" + sliderLabel[i]).attr({"width":"12px", "height":"360px", "position":"relative", "margin":"5px"});
-      $("#" + sliderLabel[i] + " .ui-slider-handle").attr({"background": "#FAFAFA"});
-      $('#' + sliderLabel[i]).slider({
+    for (var i=0; i<nBins(item); i++) {
+      $("#" + sliderLabel(i)).attr({"width":"12px", "height":"360px", "position":"relative", "margin":"5px"});
+      $("#" + sliderLabel(i) + " .ui-slider-handle").attr({"background": "#FAFAFA"});
+      $('#' + sliderLabel(i)).slider({
         animate: true,
         orientation: "vertical",
         max: 1 , min: 0, step: 0.01, value: 0.5,
@@ -217,47 +217,18 @@ var experiment = {
     }
 
     $("#continue").click(function() {
-      if (nResponses < nBins) {
+      if (nResponses < nBins(item)) {
         $("#targetError").show();
       } else {
         $("#continue").unbind("click");
         $("#targetError").hide();
         experiment.data[qNumber.toString()] = trialData;
-        if (qNumber + 1 < nProbQs) {
-          experiment.trial(qNumber+1);
-        } else {
-          experiment.maxTrial(qNumber+1);
-        }
-      }
-    })
-  },
-
-  maxTrial: function(qNumber) {
-    $('.bar').css('width', ( ((nProbQs*nBins + (qNumber-nProbQs)) / nClicks)*100 + "%"));
-    showSlide("maxTrial");
-    $("#max").val("");
-    $("#maxError").hide();
-
-    var item = items[qNumber - nProbQs];
-    $(".item").html(item);
-    console.log(plural[item]);
-    $(".pluralItem").html(plural[item]);
-
-    $("#maxContinue").click(function() {
-		  var response = $("#max").val();
-		  var isPrice = /^[0-9]*(\.[0-9])?[0-9]$/.test(response);
-		  if (isPrice) {
-        $("#maxContinue").unbind("click");
-        $("#targetError").hide();
-        experiment.data[qNumber.toString()] = {response:response, item:item};
         if (qNumber + 1 < nQs) {
-          experiment.maxTrial(qNumber+1);
+          experiment.trial(qNumber+1);
         } else {
           experiment.questionaire();
         }
-		  } else {
-		    $("#maxError").show();
-		  }
+      }
     })
   }
 };
