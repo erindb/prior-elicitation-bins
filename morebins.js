@@ -14,6 +14,12 @@ if (cond == "boys") {
   var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 }
 
+pronoun = {"watch":"It was",
+           "laptop":"It was",
+           "coffee maker":"It was",
+           "headphones":"They were",
+           "sweater":"It was"};
+
 stepLength = {
   "watch":50,
   "laptop":50,
@@ -117,6 +123,7 @@ var experiment = {
     for (var i=0; i<nRows; i++) {
       allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> bought ' +
                       ' <span class="article">{{}}</span> new <i><b><span class="item">{{}}</span></b></i>. ' +
+                      pronoun[item] + " <b><i>expensive</i></b>." +
                       '</p><p id="question">Please rate how likely it is that the cost of the ' +
                       '<span class="item">{{}}</span> is within each of the following ranges.</p>' +
                       '<table><tbody><tr id="sliders' + i +
