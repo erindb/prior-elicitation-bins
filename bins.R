@@ -3,6 +3,7 @@ library(rjson)
 nbins = 40 # at least
 
 rdata = read.table("~/CoCoLab/prior-elicitation-bins/clean-morebins.results", sep="\t", header=T)
+rdata = rdata[as.numeric(as.character(rdata$subj))<21,]
 
 rresponseLists = lapply(as.character(rdata$responses), fromJSON)
 indices = unlist(sapply(1:length(rresponseLists), function(i) {
@@ -34,43 +35,43 @@ upperLists = lapply(as.character(data$uppers), function(x) {
 })
 
 items = unique(as.character(data$item))
-maxima = sapply(items, function(item) {
-  item.data = data[data$item == item,]
-  itemResponses = lapply(as.character(item.data$responses), function(str) {
-    lst = fromJSON(str)
-    return(lst/sum(lst)) #could normalize here
-    #return(lst)
-  })
-  itemLowers = lapply(as.character(item.data$lowers), function(x) {
-    if (x == "") {
-      return("")
-    } else {
-      return(fromJSON(x))
-    }
-  })
-  #-1 instead of infty here:
-  itemUppers = lapply(as.character(item.data$uppers), function(x) {
-    if (x == "") {
-      return("")
-    } else {
-      return(fromJSON(x))
-    }
-  })
-  lowers = itemLowers[[1]]
-  uppers = itemUppers[[1]]
-  mids = (lowers + uppers) / 2
-  nzero = sapply(1:length(lowers), function(i) {
-    responses = unlist(sapply(itemResponses, function(itemResponse) {
-      return(itemResponse[i])
-    }))
-    return(sum(responses == 0))
-  })
-  at.least.2 = which(nzero>=1)
-  maximum = at.least.2[at.least.2 > 13][1]
-  print(nzero)
-  return(maximum)
-})
-maxima[["laptop"]] = -1
+# maxima = sapply(items, function(item) {
+#   item.data = data[data$item == item,]
+#   itemResponses = lapply(as.character(item.data$responses), function(str) {
+#     lst = fromJSON(str)
+#     return(lst/sum(lst)) #could normalize here
+#     #return(lst)
+#   })
+#   itemLowers = lapply(as.character(item.data$lowers), function(x) {
+#     if (x == "") {
+#       return("")
+#     } else {
+#       return(fromJSON(x))
+#     }
+#   })
+#   #-1 instead of infty here:
+#   itemUppers = lapply(as.character(item.data$uppers), function(x) {
+#     if (x == "") {
+#       return("")
+#     } else {
+#       return(fromJSON(x))
+#     }
+#   })
+#   lowers = itemLowers[[1]]
+#   uppers = itemUppers[[1]]
+#   mids = (lowers + uppers) / 2
+#   nzero = sapply(1:length(lowers), function(i) {
+#     responses = unlist(sapply(itemResponses, function(itemResponse) {
+#       return(itemResponse[i])
+#     }))
+#     return(sum(responses == 0))
+#   })
+#   at.least.2 = which(nzero>=1)
+#   maximum = at.least.2[at.least.2 > 13][1]
+#   print(nzero)
+#   return(maximum)
+# })
+# maxima[["laptop"]] = -1
 
 conf <- function(v) {
   v <- v[is.na(v) == F]
@@ -92,7 +93,7 @@ error.bar <- function(x, y, upper, lower=upper, lw=2, col="black", length=0.1,..
 
 getBins = function(item) {
   indices = data$item == item & data$qType == "prob"
-  m = maxima[[item]]
+  m = -1#maxima[[item]]
   n = length(lowerLists[indices][[1]])
   if (m == -1) {
     m=n
