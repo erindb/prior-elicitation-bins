@@ -1,6 +1,6 @@
 library(rjson)
 
-nbins = 40
+nbins = 40 # at least
 
 rdata = read.table("~/CoCoLab/prior-elicitation-bins/clean-morebins.results", sep="\t", header=T)
 
