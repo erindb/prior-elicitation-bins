@@ -1,4 +1,4 @@
-# watch = read.table("webchurch_prices/watch-prices.txt")$V1
+watch = read.table("webchurch_prices/watch-prices.txt")$V1
 laptop = read.table("webchurch_prices/laptop-prices.txt")$V1
 coffee = read.table("webchurch_prices/coffee-prices.txt")$V1
 sweater = read.table("webchurch_prices/sweater-prices.txt")$V1
@@ -90,24 +90,6 @@ for (item in items) {
 	prices[[item]] = (lowerLists[[1]][1:n] + upperLists[[1]][1:n])/2
 }
 
-item="watch"
-item.ymax=0.8
-item.xmax=2925
-model=watch
-png(paste(c("graphs/",item,".png"),collapse=""), 500, 300)
-# hist(watch, xlim=c(0,2925), yaxt="n")
-# par(new=T)
-plot(prices[[item]], posterior.responses[[item]], type="l", xlim=c(0,item.xmax), ylim=c(0,item.ymax), ylab="", xlab="", col="red", main=item)
-par(new=T)
-polygon(c(prices[[item]],rev(prices[[item]])), c(posterior.lowerconf[[item]], rev(posterior.higherconf[[item]])), col="pink", border=NA, density=50)
-polygon(c(prices[[item]],rev(prices[[item]])), c(prior.lowerconf[[item]], rev(prior.higherconf[[item]])), col="lightblue", border=NA, density=50)
-par(new=T)
-plot(prices[[item]], posterior.responses[[item]], type="l", xlim=c(0,item.xmax), ylim=c(0,item.ymax), ylab="", xlab="", col="red", main="")
-par(new=T)
-plot(prices[[item]], prior.responses[[item]], type="l", xlim=c(0,item.xmax), ylim=c(0,item.ymax), ylab="", xlab="", col="blue")
-legend(x="topright", legend=c("prior", "posterior"), fill=c("blue", "red"))
-dev.off()
-
 plot.stuff=function(item, item.ymax, item.xmax, model) {
 	png(paste(c("graphs/",item,".png"),collapse=""), 500, 300)
 	plot(prices[[item]], posterior.responses[[item]], type="l", xlim=c(0,item.xmax), ylim=c(0,item.ymax), ylab="", xlab="", yaxt="n", col="red", main=item)
@@ -119,10 +101,11 @@ plot.stuff=function(item, item.ymax, item.xmax, model) {
 	par(new=T)
 	plot(prices[[item]], prior.responses[[item]], type="l", xlim=c(0,item.xmax), ylim=c(0,item.ymax), ylab="", yaxt="n", xlab="", col="blue")
 	par(new=T)
-	hist(model, xlim=c(0,item.xmax), yaxt="n", main="", xlab="", breaks=300)
-	legend(x="topright", legend=c("prior", "posterior"), fill=c("blue", "red"))
+	hist(model, xlim=c(0,item.xmax), yaxt="n", main="", xlab="", breaks=100)
+	legend(x="topright", legend=c("prior", "posterior", "model"), fill=c("blue", "red", "black"))
 	dev.off()
 }
+plot.stuff("watch", 0.8, 2925, watch)
 plot.stuff("laptop", 0.9, 2425, laptop)
 plot.stuff("coffee maker", 0.8, 266, coffee)
 plot.stuff("sweater", 0.8, 235.5, sweater)
