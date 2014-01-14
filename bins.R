@@ -118,9 +118,9 @@ getBins = function(item) {
   lowers = lowerLists[indices][[1]][1:m]
   uppers = upperLists[indices][[1]][1:m]
   if (item == "watch") {
-    lowers = lowers[lowers<2000]
-    uppers = uppers[lowers<2000]
-    responses = responses[lowers<2000]
+    lowers = lowers[lowers<max(lowers)]
+    uppers = uppers[lowers<max(lowers)]
+    responses = responses[lowers<max(lowers)]
     watchbounds = c(sapply(1:(length(lowers)-1), function(i) {
       low = lowers[i]
       high = uppers[i]
