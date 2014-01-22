@@ -110,3 +110,10 @@ plot.stuff("laptop", 0.9, 2425, laptop)
 plot.stuff("coffee maker", 0.8, 266, coffee)
 plot.stuff("sweater", 0.8, 235.5, sweater)
 plot.stuff("headphones", 0.9, 321, headphones)
+
+for (item in as.character(items)) {
+  print(item)
+  print(prices[[item]])
+  print(prior.responses[[item]])
+  print("")
+}
