@@ -104,6 +104,7 @@ plot.stuff=function(item, item.ymax, item.xmax, model) {
 	par(new=T)
 	hist(model, xlim=c(0,item.xmax), yaxt="n", main="", xlab="", breaks=100)
 	legend(x="topright", legend=c("prior", "posterior", "model"), fill=c("blue", "red", "black"))
+  #abline(v=sum(prices[[item]] * prior.responses[[item]] / sum(prior.responses[[item]]))) #mean
 	dev.off()
 }
 plot.stuff("watch", 0.8, 2925, watch)
@@ -117,4 +118,20 @@ for (item in as.character(items)) {
   print(prices[[item]])
   print(prior.responses[[item]])
   print("")
+}
+
+for (item in as.character(items)) {
+  print(item)
+  counts = round(prior.responses[[item]]*100)
+  bank = c()
+  for (i in 1:length(counts)) {
+    count = counts[i]
+    price = prices[[item]][i]
+    for (j in 1:count) {
+      bank = c(bank, price)
+    }
+  }
+  print(paste("mean", mean(bank)))
+  print(paste("median", median(bank)))
+  print(paste("sd", sd(bank)))
 }
