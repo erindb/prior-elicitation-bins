@@ -1,4 +1,5 @@
-watch = read.table("webchurch_prices/watch-prices.txt")$V1
+watch = as.numeric(as.character(read.table("webchurch_prices/watch-prices.txt")$V1))
+watch = watch[!is.na(watch)]
 laptop = read.table("webchurch_prices/laptop-prices.txt")$V1
 coffee = read.table("webchurch_prices/coffee-prices.txt")$V1
 sweater = read.table("webchurch_prices/sweater-prices.txt")$V1
