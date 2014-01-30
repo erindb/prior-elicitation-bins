@@ -60,6 +60,14 @@ for (var i=0; i<items.length; i++) {
 var conds = ["original", "split"];
 var cond = sample(conds);
 
+var expensive = sample([true, false]);
+
+pronoun = {"watch":"It was",
+           "laptop":"It was",
+           "coffee maker":"It was",
+           "headphones":"They were",
+           "sweater":"It was"};
+
 stepLength = {
   "watch":300,
   "laptop":500,
@@ -142,7 +150,8 @@ $(document).ready(function() {
 
 var experiment = {
   data: {version:"jan30",
-         cond:cond},
+         cond:cond,
+         expensive:expensive},
   
   instructions: function() {
     if (turk.previewMode) {
@@ -201,11 +210,19 @@ var experiment = {
     var highPrice = splitHigher[myIndex];
     var buyer = buyers[myIndex];
 
+    var expensiveSentence;
+    if (expensive) {
+      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>." +
+    } else {
+      expensiveSentence = ""
+    }
+
     $("#all-that-jazz").html(
       '<p id="statement">' + buyer + ' bought ' +
       ' <span class="article">{{}}</span> new <font color="' +
       color[item] + '"><i><b>' + item +
-      '</b></i></font>.</p><p id="question">Please rate how likely it is ' +
+      '</b></i></font>.' + expensiveSentence +
+      '</p><p id="question">Please rate how likely it is ' +
       'that the cost of the ' + item +
       ' is within the range shown below the slider.</p>' +
       '<div align="center"><table><tbody><tr id="sliders"></tr>' +
@@ -310,11 +327,19 @@ var experiment = {
     } else {
       hr = ''
     }
+
+    var expensiveSentence;
+    if (expensive) {
+      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>." +
+    } else {
+      expensiveSentence = ""
+    }
+
     for (var i=0; i<nRows; i++) {
       allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> bought ' +
                      ' <span class="article">{{}}</span> new <font color="' +
                      color[item] + '"><i><b>' + item +
-                     '</b></i></font>. ' +
+                     '</b></i></font>. ' + expensiveSentence +
                      '</p><p id="question">Please rate how likely it is that the cost of the ' +
                      '<span class="item">{{}}</span> is within each of the following ranges.</p>' +
                      '<div align="center">' +
