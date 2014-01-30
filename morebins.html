@@ -28,9 +28,8 @@
 
 <div class="slide" id="instructions">
   <h2>Instructions</h2>
-  <p class="center-block-text"> You will see 5 scenarios displayed on the screen. </p>
-  <p class="center-block-text"> In each scenario, someone has just bought an item. Please give your best estimate of the price of the item. You will do this by rating how likely you think it is that the actual price is within each of <span class="nBins">{{}}</span> different ranges.</p>
-  <p class="center-block-text"> In each scenario, <b>the items will change</b>. Make sure to look carefully at the items each time.</p>
+  <p class="center-block-text"> You will see some scenarios displayed on the screen. In each scenario, someone has just bought an item. Please give your best estimate of the price of the item. You will do this by rating how likely you think it is that the actual price is within different ranges.</p>
+  <p class="center-block-text"> Make sure to look carefully at the <b>items</b> and the <b>prices</b> each time as they will change!</p>
   <p class="center-block-text">Please click "Begin" when you're ready to start.</p>
   <button type="button" id="begin" value="Begin">
   Begin</button>
@@ -59,18 +58,6 @@
   <div id="all-that-jazz"></div>
   <p id="targetError">Please make sure to adjust all the sliders before continuing (or tap the slider if you think it's already in the right position).</p> 
   <button type="button" id="continue">Continue</button>
-</div>
-
-<div class="slide" id="maxTrial">
-  <br/>
-  <br/>
-  <p class="center-block-text">Imagine that 1000 <b><span class="pluralItem">{{}}</span></b> were bought today. Out of those 1000 <b><span class="pluralItem">{{}}</span></b>, how much do you think the <i>most expensive</i> <b><span class="item">{{}}</span></b> cost?</p>
-  <div><input type="text" id="max"></input></div>
-  <br/>
-  <button type="button" id="maxContinue">Continue</button>
-  <p id="maxError">Please enter a valid price -- a natural number with no
-  decimal point, or a number with a decimal point and two digits after the
-  decimal.</p>
 </div>
 
 <div class="slide" id="finished">
