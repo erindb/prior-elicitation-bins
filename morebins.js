@@ -212,16 +212,16 @@ var experiment = {
 
     var expensiveSentence;
     if (expensive) {
-      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>." +
+      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>.";
     } else {
-      expensiveSentence = ""
+      expensiveSentence = "";
     }
 
     $("#all-that-jazz").html(
       '<p id="statement">' + buyer + ' bought ' +
       ' <span class="article">{{}}</span> new <font color="' +
       color[item] + '"><i><b>' + item +
-      '</b></i></font>.' + expensiveSentence +
+      '</b></i></font>. ' + expensiveSentence +
       '</p><p id="question">Please rate how likely it is ' +
       'that the cost of the ' + item +
       ' is within the range shown below the slider.</p>' +
@@ -330,9 +330,9 @@ var experiment = {
 
     var expensiveSentence;
     if (expensive) {
-      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>." +
+      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>.";
     } else {
-      expensiveSentence = ""
+      expensiveSentence = "";
     }
 
     for (var i=0; i<nRows; i++) {
