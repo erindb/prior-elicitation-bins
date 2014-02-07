@@ -209,18 +209,26 @@ var experiment = {
       $(".article").html("a");
     }
 
+    var dollar
+    var units
     if (domain == "age") {
         $(".adjective").html("old");
         $(".scale").html("age");
         $(".verb").html("met");
+        dollar = ""
+        units = " yrs"
     } else if (domain == "height") {
         $(".adjective").html("tall");
         $(".scale").html("height");
         $(".verb").html("saw");
+        dollar = ""
+        units = " ft"
     } else if (domain == "price") {
         $(".adjective").html("expensive");
         $(".scale").html("cost");
         $(".verb").html("bought");
+        dollar = "$"
+        units = ""
     } else {
         alert("error 171: " + domain);
     }
@@ -238,18 +246,24 @@ var experiment = {
         sliderCells = ""
         priceCells = ""
       }
-      sliderCells += '<td rowspan="5" width="' + otherColWidth + '" align="center"><div class="slider" id="' + sliderLabel(i) + '"></div></td>';
+      sliderCells += '<td rowspan="5" width="' + otherColWidth +
+                     '" align="center"><div class="slider" id="' +
+                     sliderLabel(i) + '"></div></td>';
       if (i<(nBins(item)-1)) {
         var lowPrice = i*stepLength[item];
         var highPrice = (i+1)*stepLength[item];
         lowers.push(lowPrice);
         uppers.push(highPrice);
-        priceCells += '<td align="center" width="' + otherColWidth + '">$' + lowPrice + '-$' + highPrice + '</td>';
+        priceCells += '<td align="center" width="' + otherColWidth + '">' +
+                      dollar + lowPrice + '-' +
+                      dollar + highPrice + units + '</td>';
       } else {
         var lowPrice = i*stepLength[item];
         lowers.push(lowPrice);
         uppers.push("infty");
-        priceCells += '<td align="center" width="' + otherColWidth + '">more than $' + lowPrice + '</td>';
+        priceCells += '<td align="center" width="' + otherColWidth +
+                      '">more than ' +
+                      dollar + lowPrice + units + '</td>';
       }
       if ((i % 10) == 9) {
         $("#sliders" + Math.floor(i/10)).html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
