@@ -60,7 +60,7 @@ for (var i=0; i<items.length; i++) {
 var conds = ["original", "split"];
 var cond = sample(conds);
 
-var expensive = sample([true, false]);
+var expensive = false; //sample([true, false]);
 
 pronoun = {"watch":"It was",
            "laptop":"It was",
