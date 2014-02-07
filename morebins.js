@@ -192,12 +192,12 @@ var experiment = {
       allthatjazz +=  '</p><p id="question">Please rate how likely it is that the ' +
                       '<span class="scale"></span> of the ' +
                       '<span class="item">{{}}</span> is within each of the following ranges.</p>' +
-                      '<table><tbody><tr id="sliders' + i +
+                      '<div align="center"><table><tbody><tr id="sliders' + i +
                      '"></tr><tr><td height="72">Very Likely</td></tr>' +
                      '<tr><td height="72">Neutral</td></tr>' +
                      '<tr><td height="72">Not Very Likely</td></tr>' +
                      '<tr><td height="72">Extremely Unlikely</td></tr>' +
-                     '<tr id="prices' + i + '"></tr></tbody></table><hr/>';
+                     '<tr id="prices' + i + '"></tr></tbody></table></div><hr/>';
     }
     $("#all-that-jazz").html(allthatjazz);
 
