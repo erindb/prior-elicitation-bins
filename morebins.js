@@ -3,36 +3,94 @@ function uniform(a, b) { return ( (Math.random()*(b-a))+a ); }
 function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
 function shuffle(v) { newarray = v.slice(0);for(var j, x, i = newarray.length; i; j = parseInt(Math.random() * i), x = newarray[--i], newarray[i] = newarray[j], newarray[j] = x);return newarray;} // non-destructive.
 
-var items = shuffle(["watch", "laptop", "coffee maker", "headphones", "sweater"]);
 var buyerGenders = shuffle(["boys", "girls", "both"]);
-var cond = buyerGenders[0];
-if (cond == "boys") {
+var gender = buyerGenders[0];
+if (gender == "boys") {
   var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan"]);
-} else if (cond == "girls") {
+} else if (gender == "girls") {
   var buyers = shuffle(["Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 } else {
   var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 }
 
-pronoun = {"watch":"It was",
+var condition = shuffle(["prior", "posterior"])[0]
+
+var items
+domain = shuffle(["age", "height", "price"])[0]
+if (domain == "age") {
+    $(".verb").html("met");
+    $(".domain").html("person");
+    $(".scale").html("age");
+    $(".general-pron").html("their");
+    items = shuffle(["New Yorker", "new parent", "college student"]);
+} else if (domain == "height") {
+    $(".verb").html("seen");
+    $(".domain").html("object");
+    $(".scale").html("height");
+    $(".general-pron").html("the");
+    items = shuffle(["building", "mountain", "tree"]);
+} else if (domain == "price") {
+    $(".verb").html("bought");
+    $(".domain").html("item");
+    $(".scale").html("price");
+    $(".general-pron").html("the");
+    items = shuffle(["watch", "laptop", "coffee maker", "headphones", "sweater"]);
+} else {
+    alert("error 16: " + domain);
+}
+
+/*pronoun = {
+           "watch":"It was",
            "laptop":"It was",
            "coffee maker":"It was",
            "headphones":"They were",
-           "sweater":"It was"};
+           "sweater":"It was",
+           "New Yorker":"They were",
+           "new parent":"They were",
+           "college student":"They were",
+           "tree":"It was",
+           "building":"It was",
+           "mountain":"It was"
+          };*/
+pronoun = {
+           "watch":"The watch was",
+           "laptop":"The laptop was",
+           "coffee maker":"The coffee maker was",
+           "headphones":"The headphones were",
+           "sweater":"The sweater was",
+           "New Yorker":"The New Yorker was",
+           "new parent":"The new parent was",
+           "college student":"The college student was",
+           "tree":"The tree was",
+           "building":"The building was",
+           "mountain":"The mountain was"
+          };
 
 stepLength = {
   "watch":50,
   "laptop":50,
   "coffee maker":4,
   "headphones":6,
-  "sweater":3
+  "sweater":3,
+  "New Yorker":5,
+  "new parent":5,
+  "college student":5,
+  "tree":5,
+  "building":10,
+  "mountain":1000
 }
 maximum = {
   "watch":3000,
   "laptop":2500,
   "coffee maker":270,
   "headphones":330,
-  "sweater":240
+  "sweater":240,
+  "New Yorker":90,
+  "new parent":90,
+  "college student":90,
+  "tree":100,
+  "building":200,
+  "mountain":20000
 }
 function nBins(item) {
   return Math.ceil(maximum[item] / stepLength[item]);
@@ -49,7 +107,6 @@ var nClicks = 0;
 for (var i=0; i<nQs; i++) {
   nClicks += nBins(items[i]);
 }
-console.log(nClicks);
 var nComplete = 0;
 
 var startTime;
@@ -72,7 +129,12 @@ $(document).ready(function() {
 });
 
 var experiment = {
-  data: {cond:cond},
+  data: {
+    gender:gender,
+    condition:condition,
+    domain:domain,
+    items:items
+  },
   
   instructions: function() {
     if (turk.previewMode) {
@@ -121,17 +183,21 @@ var experiment = {
     var nRows = Math.ceil(nBins(item) / 10);
     var allthatjazz = '';
     for (var i=0; i<nRows; i++) {
-      allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> bought ' +
-                      ' <span class="article">{{}}</span> new <i><b><span class="item">{{}}</span></b></i>. ' +
-                      pronoun[item] + " <b><i>expensive</i></b>." +
-                      '</p><p id="question">Please rate how likely it is that the cost of the ' +
+      allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> <span class="verb"></span> ' +
+                      ' <span class="article">{{}}</span> <i><b><span class="item">{{}}</span></b></i>. ';
+      if (condition == "posterior") {
+        allthatjazz += '<span class="buyer">{{}}</span> says, <b>"' + pronoun[item] +
+                       ' <span class="adjective"></span>."</b>';
+      }
+      allthatjazz +=  '</p><p id="question">Please rate how likely it is that the ' +
+                      '<span class="scale"></span> of the ' +
                       '<span class="item">{{}}</span> is within each of the following ranges.</p>' +
                       '<table><tbody><tr id="sliders' + i +
                      '"></tr><tr><td height="72">Very Likely</td></tr>' +
                      '<tr><td height="72">Neutral</td></tr>' +
                      '<tr><td height="72">Not Very Likely</td></tr>' +
                      '<tr><td height="72">Extremely Unlikely</td></tr>' +
-                     '<tr id="prices' + i + '"></tr></tbody></table><hr/>'
+                     '<tr id="prices' + i + '"></tr></tbody></table><hr/>';
     }
     $("#all-that-jazz").html(allthatjazz);
 
@@ -141,6 +207,22 @@ var experiment = {
       $(".article").html("");
     } else {
       $(".article").html("a");
+    }
+
+    if (domain == "age") {
+        $(".adjective").html("old");
+        $(".scale").html("age");
+        $(".verb").html("met");
+    } else if (domain == "height") {
+        $(".adjective").html("tall");
+        $(".scale").html("height");
+        $(".verb").html("saw");
+    } else if (domain == "price") {
+        $(".adjective").html("expensive");
+        $(".scale").html("cost");
+        $(".verb").html("bought");
+    } else {
+        alert("error 171: " + domain);
     }
 
     var firstColWidth = 150;
