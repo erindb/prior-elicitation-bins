@@ -34,7 +34,7 @@ if (domain == "age") {
     $(".domain").html("item");
     $(".scale").html("price");
     $(".general-pron").html("the");
-    items = shuffle(["watch", "laptop", "coffee maker", "headphones", "sweater"]);
+    items = shuffle(["watch", "laptop", "coffee maker"]);//, "headphones", "sweater"]);
 } else {
     alert("error 16: " + domain);
 }
