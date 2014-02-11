@@ -4,7 +4,7 @@ function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
 function shuffle(v) { newarray = v.slice(0);for(var j, x, i = newarray.length; i; j = parseInt(Math.random() * i), x = newarray[--i], newarray[i] = newarray[j], newarray[j] = x);return newarray;} // non-destructive.
 
 var buyerGenders = shuffle(["boys", "girls", "both"]);
-var gender = buyerGenders[0];
+var gender = "boys";// buyerGenders[0];
 if (gender == "boys") {
   var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan"]);
 } else if (gender == "girls") {
