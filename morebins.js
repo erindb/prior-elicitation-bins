@@ -2,7 +2,6 @@ function caps(a) {return a.substring(0,1).toUpperCase() + a.substring(1,a.length
 function uniform(a, b) { return ( (Math.random()*(b-a))+a ); }
 function showSlide(id) { $(".slide").hide(); $("#"+id).show(); }
 function shuffle(v) { newarray = v.slice(0);for(var j, x, i = newarray.length; i; j = parseInt(Math.random() * i), x = newarray[--i], newarray[i] = newarray[j], newarray[j] = x);return newarray;} // non-destructive.
-function sample(v) { return(shuffle(v)[0]) }
 
 var buyerGenders = shuffle(["boys", "girls", "both"]);
 var gender = "boys";// buyerGenders[0];
@@ -11,31 +10,13 @@ if (gender == "boys") {
 } else if (gender == "girls") {
   var buyers = shuffle(["Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 } else {
-  var buyers = shuffle([
-    "Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn",
-    "Danielle", "Emma"
-  ]);
+  var buyers = shuffle(["Alan", "Bob", "Calvin", "Dan", "Evan", "Ann", "Beth", "Caitlyn", "Danielle", "Emma"]);
 }
-var colors = shuffle(["DF0101", "31B404", "0404B4", "FF8000", "B404AE"]);
-var color = {}
-for (var i=0; i<items.length; i++) {
-  color[items[i]] = colors[i];}
-
-var conds = ["original", "split"];
-var cond = sample(conds);
-
-var expensive = false; //sample([true, false]);
-
-pronoun = {"watch":"It was",
-           "laptop":"It was",
-           "coffee maker":"It was",
-           "headphones":"They were",
-           "sweater":"It was"};
 
 var condition = shuffle(["prior", "posterior"])[0]
 
 var items
-domain = shuffle(["height","price"])[0];// "age";//shuffle(["age", "height", "price"])[0]
+domain = shuffle(["age", "height", "price"])[0]
 if (domain == "age") {
     $(".verb").html("met");
     $(".domain").html("person");
@@ -86,20 +67,6 @@ pronoun = {
           };
 
 stepLength = {
-<<<<<<< HEAD
-  "watch":300,
-  "laptop":500,
-  "coffee maker":50,
-  "headphones":50,
-  "sweater":50
-}
-maximum = {
-  "watch":3000,
-  "laptop":3000,
-  "coffee maker":300,
-  "headphones":400,
-  "sweater":300
-=======
   "watch":50,
   "laptop":50,
   "coffee maker":4,
@@ -124,7 +91,6 @@ maximum = {
   "tree":100,
   "building":200,
   "mountain":20000
->>>>>>> feb7
 }
 function nBins(item) {
   return Math.ceil(maximum[item] / stepLength[item]);
@@ -136,42 +102,12 @@ var plural = {"watch":"watches",
               "headphones":"headphones",
               "sweater":"sweaters"}
 
-
+var nQs = items.length;
 var nClicks = 0;
-for (var i=0; i<items.length; i++) {
+for (var i=0; i<nQs; i++) {
   nClicks += nBins(items[i]);
 }
 var nComplete = 0;
-var nQs;
-if (cond == "original") {
-  nQs = items.length;
-} else if (cond == "split") {
-  nQs = nClicks;
-  var splitItems = []
-  var splitLower = []
-  var splitHigher = []
-  for (var i=0; i<items.length; i++) {
-    for (var j=0; j<nBins(items[i]); j++) {
-      var lowPrice = j*stepLength[items[i]];
-      var highPrice;
-      if (j == nBins(items[i]) - 1) {
-        highPrice = "infty";
-      } else {
-        highPrice = (j+1)*stepLength[items[i]];
-      }
-      splitItems.push(items[i]);
-      splitLower.push(lowPrice);
-      splitHigher.push(highPrice);
-    }
-  }
-  var indices = []
-  for (var i=0; i<nQs; i++) {
-    indices.push(i);
-  }
-  var myIndices = shuffle(indices);
-} else {
-  alert("ERROR0: " + cond + " is not a condition I know how to handle.")
-}
 
 var startTime;
 
@@ -193,18 +129,12 @@ $(document).ready(function() {
 });
 
 var experiment = {
-<<<<<<< HEAD
-  data: {version:"jan30",
-         cond:cond,
-         expensive:expensive},
-=======
   data: {
     gender:gender,
     condition:condition,
     domain:domain,
     items:items
   },
->>>>>>> feb7
   
   instructions: function() {
     if (turk.previewMode) {
@@ -242,130 +172,8 @@ var experiment = {
       }
     });
   },
-
-  trial: function(qNumber) {
-    if (cond == "original") {
-      experiment.originalTrial(qNumber)
-    } else if (cond == "split") {
-      experiment.splitTrial(qNumber)
-    } else {
-      alert("ERROR1: " + cond + " isn't a condition i'm prepared to run!!!!")
-    }
-  },
-
-  splitTrial: function(qNumber) {
-    $('.bar').css('width', ( (nComplete / nClicks)*100 + "%"));
-    showSlide("trial");
-
-    var myIndex = myIndices[qNumber];
-    var item = splitItems[myIndex];
-    var lowPrice = splitLower[myIndex];
-    var highPrice = splitHigher[myIndex];
-    var buyer = buyers[myIndex];
-
-    var expensiveSentence;
-    if (expensive) {
-      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>.";
-    } else {
-      expensiveSentence = "";
-    }
-
-    $("#all-that-jazz").html(
-      '<p id="statement">' + buyer + ' bought ' +
-      ' <span class="article">{{}}</span> new <font color="' +
-      color[item] + '"><i><b>' + item +
-      '</b></i></font>. ' + expensiveSentence +
-      '</p><p id="question">Please rate how likely it is ' +
-      'that the cost of the ' + item +
-      ' is within the range shown below the slider.</p>' +
-      '<div align="center"><table><tbody><tr id="sliders"></tr>' +
-      '<tr><td height="72">Very Likely</td></tr>' +
-      '<tr><td height="72">Neutral</td></tr>' +
-      '<tr><td height="72">Not Very Likely</td></tr>' +
-      '<tr><td height="72">Extremely Unlikely</td></tr>' +
-      '<tr id="prices"></tr></tbody></table></div><br/>'
-    );
-
-    if (item == "headphones") {
-      $(".article").html("");
-    } else {
-      $(".article").html("a");
-    }
-
-    var firstColWidth = 150;
-    var otherColWidth = 100;
-
-    sliderCells = '<td height="72">Extremely Likely</td>' +
-                  '<td rowspan="5" width="' + otherColWidth +
-                  '" align="center"><div class="slider" id="slider">' +
-                  '</div></td>';
-
-    var priceCells = '<td width="' + firstColWidth + '"></td>';
-    if (highPrice == "infty") {
-      priceCells += '<td align="center" width="' + otherColWidth +
-                    '"><b>more than $' + lowPrice + '</b></td>';
-    } else {
-      priceCells += '<td align="center" width="' + otherColWidth + '"><b>$' +
-                    lowPrice + '-$' + highPrice + '</b></td>';
-    }
-
-    $("#sliders").html(sliderCells);
-    $("#prices").html(priceCells);
-
-    var trialData = {buyer:buyer,
-                     item:item,
-                     //max:maximum[item],
-                     lower:lowPrice,
-                     color:color[item],
-                     upper:highPrice};
-    var nResponses = 0;
-
-    $("#slider").attr({"width":"12px",
-                       "height":"360px",
-                       "position":"relative",
-                       "margin":"5px"});
-    $("#slider .ui-slider-handle").attr({"background": "#FAFAFA"});
-    $('#slider').slider({
-      animate: true,
-      orientation: "vertical",
-      max: 1 , min: 0, step: 0.01, value: 0.5,
-      slide: function() {
-        $('#slider .ui-slider-handle').css({
-           "background":"#E0F5FF",
-           "border-color": "#001F29"
-        });
-      },
-      change: function(value) {
-        $('#slider').css({"background":"#99D6EB"});
-        $('#slider .ui-slider-handle').css({
-          "background":"#667D94",
-          "border-color": "#001F29" });
-        if (trialData.response == null) {
-          nResponses++;
-          nComplete++;
-          $('.bar').css('width', ( (nComplete / nClicks)*100 + "%"));
-        }
-        trialData.response = $("#slider").slider("value");
-      }
-    });
-
-    $("#continue").click(function() {
-      if (nResponses < 1) {
-        $("#targetError").show();
-      } else {
-        $("#continue").unbind("click");
-        $("#targetError").hide();
-        experiment.data[qNumber.toString()] = trialData;
-        if (qNumber + 1 < nQs) {
-          experiment.trial(qNumber+1);
-        } else {
-          experiment.questionaire();
-        }
-      }
-    })
-  },
   
-  originalTrial: function(qNumber) {
+  trial: function(qNumber) {
     $('.bar').css('width', ( (nComplete / nClicks)*100 + "%"));
     showSlide("trial");
 
@@ -374,37 +182,7 @@ var experiment = {
 
     var nRows = Math.ceil(nBins(item) / 10);
     var allthatjazz = '';
-    var hr;
-    if (nRows > 1) {
-      hr = '<hr/>'
-    } else {
-      hr = ''
-    }
-
-    var expensiveSentence;
-    if (expensive) {
-      expensiveSentence = pronoun[item] + " <b><i>expensive</i></b>.";
-    } else {
-      expensiveSentence = "";
-    }
-
     for (var i=0; i<nRows; i++) {
-<<<<<<< HEAD
-      allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> bought ' +
-                     ' <span class="article">{{}}</span> new <font color="' +
-                     color[item] + '"><i><b>' + item +
-                     '</b></i></font>. ' + expensiveSentence +
-                     '</p><p id="question">Please rate how likely it is that the cost of the ' +
-                     '<span class="item">{{}}</span> is within each of the following ranges.</p>' +
-                     '<div align="center">' +
-                     '<table><tbody><tr id="sliders' + i + '"></tr>' +
-                     '<tr><td height="72">Very Likely</td></tr>' +
-                     '<tr><td height="72">Neutral</td></tr>' +
-                     '<tr><td height="72">Not Very Likely</td></tr>' +
-                     '<tr><td height="72">Extremely Unlikely</td></tr>' +
-                     '<tr id="prices' + i + '"></tr></tbody></table>' +
-                     hr + '</div>'
-=======
       allthatjazz += '<p id="statement"><span class="buyer">{{}}</span> <span class="verb"></span> ' +
                       ' <span class="article">{{}}</span> <i><b><span class="item">{{}}</span></b></i>. ';
       if (condition == "posterior") {
@@ -420,7 +198,6 @@ var experiment = {
                      '<tr><td height="72">Not Very Likely</td></tr>' +
                      '<tr><td height="72">Extremely Unlikely</td></tr>' +
                      '<tr id="prices' + i + '"></tr></tbody></table></div><hr/>';
->>>>>>> feb7
     }
     $("#all-that-jazz").html(allthatjazz);
 
@@ -477,24 +254,16 @@ var experiment = {
         var highPrice = (i+1)*stepLength[item];
         lowers.push(lowPrice);
         uppers.push(highPrice);
-<<<<<<< HEAD
-        priceCells += '<td align="center" width="' + otherColWidth + '"><b>$' + lowPrice + '-$' + highPrice + '</b></td>';
-=======
         priceCells += '<td align="center" width="' + otherColWidth + '">' +
                       dollar + lowPrice + '-' +
                       dollar + highPrice + units + '</td>';
->>>>>>> feb7
       } else {
         var lowPrice = i*stepLength[item];
         lowers.push(lowPrice);
         uppers.push("infty");
-<<<<<<< HEAD
-        priceCells += '<td align="center" width="' + otherColWidth + '"><b>more than $' + lowPrice + '</b></td>';
-=======
         priceCells += '<td align="center" width="' + otherColWidth +
                       '">more than ' +
                       dollar + lowPrice + units + '</td>';
->>>>>>> feb7
       }
       if ((i % 10) == 9) {
         $("#sliders" + Math.floor(i/10)).html('<td height="80" width="' + firstColWidth + '">Extremely Likely</td>' + sliderCells);
@@ -508,10 +277,9 @@ var experiment = {
 
     var trialData = {buyer:buyer,
                      item:item,
-                     //max:maximum[item],
+                     max:maximum[item],
                      lowers:lowers,
                      uppers:uppers,
-                     color:color[item],
                      responses:[]};
     var nResponses = 0;
 
