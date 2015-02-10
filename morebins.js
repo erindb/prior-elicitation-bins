@@ -16,7 +16,7 @@ if (gender == "boys") {
 var condition = shuffle(["prior", "posterior"])[0]
 
 var items
-domain = shuffle(["age", "height", "price"])[0]
+domain = shuffle(["height","price"])[0];// "age";//shuffle(["age", "height", "price"])[0]
 if (domain == "age") {
     $(".verb").html("met");
     $(".domain").html("person");
